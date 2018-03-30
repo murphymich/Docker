@@ -1,0 +1,1091 @@
+Ansible :-
+========================================================================================================================================================================================================
+
+Anisble is for 
+a> changemanagement
+b> provisioning
+c> Automation
+d> Orchestration
+
+
+Provisioning :- is nothing but transisition from one state to another state
+=============
+
+It could be 
+
+a> make a linux server to a webserver
+b> make a linux server to a db server
+c> make a linux server to a FTP server
+d> make a linux server to a Mail server
+
+a>make a linux server to a webserver :-
+As part of this we do
+a> install apache on linux
+b>copy config files and etc
+
+
+Automation :-
+=============
+
+We define tasks in Ansible to perform it automatically
+
+Ex :- Using this, we can upgrade php in hundreds of server at time
+
+
+Orchestration :-
+=================
+
+Most of the people  thinks that automation and Orchestration are same, but it is not
+
+automation takes place in single server
+
+Orchestration takes place in multiple servers
+
+
+
+Why Ansible :-
+=============================================================================================================================================================================================================
+a> it is unique and  clean
+
+b>  no agents are required on remote servers to communicate with main server
+
+c> No database is required to move one system to other so it is portable.
+
+d> it is very simple to upgrade Anisble
+
+
+
+=> Why Ansible is unique and clean
+============================================================================================================================================================================================
+
+It uses YAML
+
+No programming is required
+
+Put your  tasks in plain text file , it performs the task for you
+
+
+
+=> Ansible has built in security
+===========================================================================================================================================================================================
+
+a> it uses ssh to communicate with other server
+
+b> and it login  to other server as "root"
+
+c> we have feature in Ansible called as "Encryption", Using this we can encrypt sensitive info like password and user name
+
+
+=> Ansible is easy to extend 
+======================================================================================================================================================================================
+
+a>  you can call "webservice call" from Anisble
+
+b> you can execute "shell commands" from Anisble
+
+c> you can execute "shell scripts" from Anisble
+
+
+=> Ansible also provides Ansible Galaxy 
+==================================================================================================================================================================================================
+
+a> Using this you can download other members playbooks and use it and instead of writing it from scratch.
+
+
+
+
+=> Ansible Architecture :-
+================================================================================================================================================================================
+
+
+Ansible control server ======================================> remote server
+
+Here Ansible control server mean  the server where Ansble is installed , playbooks are created
+
+remote server means the server where deploy the code.
+
+
+=> Ansible control server :-
+======================================================================================================================================================================================
+
+a> it is  python based
+
+b> so we neeed python 2.6 or higher version installed on control server
+
+c> OS  should be linux/unix or mac
+
+d> control server perspective windows server is not supported.
+
+
+
+=> Ansible remote server :-
+======================================================================================================================================================================================
+
+a> since Ansible is python base, we need to have python 2.4+ (simplejson)
+
+b> ssh should be installed and running
+
+c> control server can't be a windows server but  remote server can be windows server (but remote powershell 2.0 or higher should be enabled)
+
+
+
+=> Python 3.x is bnot supported.
+
+
+
+=> Ansible components :-
+==================================================================================================================================================================================
+
+a> Inventory :- this is simple text file where hostnames are placed
+==============
+
+b> Module :- a Programme unit og work to be done, these are created and maintained by Anisble developers
+==============
+
+c> playbook :- is something  that you gonna create to perform a task
+==============
+
+Playbook may contain mutiple plays and each play has  its own defined task.
+
+for example , we have created a playbook and it has three play
+
+First play , copy some text file to  server "A"
+
+Second play, execute some scripts on server "B"
+
+third play , delete some text files on server "c"
+
+d> Ansible config file :-
+============================
+
+e> Python :-
+===============
+generally python doesn't come with Ansible but it makes use of python to deploy the packages from control server to remote server.
+
+
+
+
+=> Variables :-
+==============================================================================================================================================================================================
+
+1> Host variables => these will be declared in inventory
+
+2> Facts => Ansible actually gather few info like ipaddresss,hostname and etc memory usages as facts variable , you can use them in playbooks
+
+3> Dynamic Variables :- variables that are created during the execution of playbooks and destroyed after the execution
+
+
+
+=> How does Ansible works :-
+===============================================================================================================================================================================================
+
+a> first, ansible evaluates the playbook that you have created
+
+b> then playbook identifies the systems towhich it has to deploy the packages and also grabs the required modules
+
+c> once it is donw with step b, it creates a small "python package"
+
+d> once the package is ready , picks the hosts from inventory and  uses ssh to place the packages in remote hosts
+
+e> once the deployment is completed on remote server, the results will be sent to control server by json installed in remote server
+
+f> once the  deployment is completed on remote server, python package will be removed from removed on /tmp directory and ssh connection will be terminated.
+
+
+
+==> Execution types :-
+===============================================================================================================================================================================================
+
+There are two types of exeution
+
+a> control server to remote system execution => we have covered it so far , please see above.
+
+b> local execution :- this is for making API calls  and wbservice calls.
+
+
+
+=> Ansible installation :-
+============================================================================================================================================================================================================
+
+a> install Vagrant ( Puppet and Chef are the two most widely used provisioners in the Vagrant ecosystem.)
+=======================================
+
+		
+		Download vagrant from vagrantup.com
+		how to download vagrant for linux @https://www.google.com/search?q=how+to+download+vagrant+for+linux&ie=utf-8&oe=utf-8
+		
+		http://kernelmastery.com/install-setup-vagrant/
+	
+download  latest rpm from  https://releases.hashicorp.com/vagrant 
+sudo zypper in vagrant_1.9.7_x86_64.rpm
+
+
+		once vagrant is installed on your  linux server , vagrant -v or vagrant version
+		
+mysqltest123:/opt/ADP/ANSIBLE # vagrant -v
+Vagrant 1.9.7
+mysqltest123:/opt/ADP/ANSIBLE # vagrant version
+Installed Version: 1.9.7
+
+Vagrant was unable to check for the latest version of Vagrant.
+Please check manually at https://www.vagrantup.com
+mysqltest123:/opt/ADP/ANSIBLE #
+		
+
+
+b> install Virtual Box
+=======================================
+				
+For open suse :-
+=================
+
+Get Virtualbox RPM  from https://www.virtualbox.org/wiki/Linux_Downloads
+sudo zypper in  VirtualBox-5.1-5.1.26_117224_openSUSE132-1.x86_64.rpm
+
+
+once Virtual Box is installed on your  linux server , vboxmanage
+
+
+		
+
+=> Before installing  Ansible, create vagrant file using below command
+
+mysqltest123:/opt/ADP/ANSIBLE # vagrant init
+A `Vagrantfile` has been placed in this directory. You are now
+ready to `vagrant up` your first virtual environment! Please read
+the comments in the Vagrantfile as well as documentation on
+`vagrantup.com` for more information on using Vagrant.
+
+
+mysqltest123:/opt/ADP/ANSIBLE # ls -ltr
+-rw-r--r-- 1 root root     3011 Aug  6 04:03 Vagrantfile
+
+
+Now edit this file  with help of  http://www.vagrantcloud.com/
+
+check Vagrantfile @ C:\Users\vishwaak\Desktop\Docker and Ansible\Vagrantfile
+
+then
+
+
+this will bring up all the vms mentioned in vagrantfile
+=========================================================
+vagrant up 
+
+
+To list Vms that are running
+==================================
+vboxmanage list runningvms
+
+
+
+
+
+
+
+
+
+
+
+c> install Ansible
+=======================================
+create  the users :
+**Ansible Setup : https://blog.dbi-services.com/gettin-ansible-up-and-running-on-a-sles-12-sp1-host/
+
+Commands to install ansible.
+
+
+export HTTPS_PROXY="https://usproxy.es.oneadp.com:8080/"
+#zypper install python3
+#zypper install python3-setuptools
+zypper install python-setuptools
+easy_install pip 
+zypper install gcc
+zypper install python-devel
+#zypper install python3-devel
+pip install --upgrade pip virtualenv virtualenvwrapper
+pip install ansible==2.3.2.0
+
+
+
+
+
+
+Excercise 1 :- Ping a servers
+========================================
+
+1> Login into Inventory server (mysqltest123)
+
+2> create a inverntory file as shown below.
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory
+11.16.34.65
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+3> ping a server using ansible
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible * -i inventory -u vishwana -m ping -k
+SSH password:
+ [WARNING]: No hosts matched, nothing to do
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+First argument is the serevr name , if you mention "*" that means all the servers in inventory
+
+-m => module here we are trying to ping server so module is ping
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible 11.16.34.65  -i inventory -u vishwana -m ping -k
+SSH password:
+11.16.34.65 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all  -i inventory -u vishwana -m ping -k
+SSH password:
+11.16.34.65 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+10.5.170.102 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+To run the same command debug mode, we use "- v" :-
+========================================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all  -i inventory -u vishwana -m ping  -k -v
+No config file found; using defaults
+SSH password:
+11.16.34.65 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+10.5.170.102 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+To run the same command in more debug mode , we use "-vv" or "-vvv" :-
+=====================================================================
+
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible 10.5.170.102  -i inventory -u vishwana -m ping  -k -vv
+No config file found; using defaults
+SSH password:
+META: ran handlers
+10.5.170.102 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Authentication failure.",
+    "unreachable": true
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible 10.5.170.102  -i inventory -u vishwana -m ping  -k -vvv
+No config file found; using defaults
+SSH password:
+META: ran handlers
+Using module file /usr/lib/python2.7/site-packages/ansible-2.3.2.0-py2.7.egg/ansible/modules/system/ping.py
+<10.5.170.102> ESTABLISH SSH CONNECTION FOR USER: vishwana
+<10.5.170.102> SSH: EXEC sshpass -d12 ssh -C -o ControlMaster=auto -o ControlPersist=60s -o User=vishwana -o ConnectTimeout=10 -o ControlPath=/root/.ansible/cp/52c35ff375 10.5.170.102 '/bin/sh -c '"'"'echo ~ && sleep 0'"'"''
+<10.5.170.102> (0, '/home/vishwana\n', 'This computer system is the property of ADP and/or its affiliates and is for authorized use only.  Use of the system is subject to ADP policies; unauthorized use is strictly prohibited and may be subject to prosecution.  To the extent permitted by applicable law, use of this private network is subject to monitoring for security and compliance purposes.\n')
+<10.5.170.102> ESTABLISH SSH CONNECTION FOR USER: vishwana
+<10.5.170.102> SSH: EXEC sshpass -d12 ssh -C -o ControlMaster=auto -o ControlPersist=60s -o User=vishwana -o ConnectTimeout=10 -o ControlPath=/root/.ansible/cp/52c35ff375 10.5.170.102 '/bin/sh -c '"'"'( umask 77 && mkdir -p "` echo /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955 `" && echo ansible-tmp-1503308190.91-60751479726955="` echo /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955 `" ) && sleep 0'"'"''
+<10.5.170.102> (0, 'ansible-tmp-1503308190.91-60751479726955=/home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955\n', '')
+<10.5.170.102> PUT /tmp/tmpp0VUfm TO /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955/ping.py
+<10.5.170.102> SSH: EXEC sshpass -d12 sftp -o BatchMode=no -b - -C -o ControlMaster=auto -o ControlPersist=60s -o User=vishwana -o ConnectTimeout=10 -o ControlPath=/root/.ansible/cp/52c35ff375 '[10.5.170.102]'
+<10.5.170.102> (0, 'sftp> put /tmp/tmpp0VUfm /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955/ping.py\n', '')
+<10.5.170.102> ESTABLISH SSH CONNECTION FOR USER: vishwana
+<10.5.170.102> SSH: EXEC sshpass -d12 ssh -C -o ControlMaster=auto -o ControlPersist=60s -o User=vishwana -o ConnectTimeout=10 -o ControlPath=/root/.ansible/cp/52c35ff375 10.5.170.102 '/bin/sh -c '"'"'chmod u+x /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955/ /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955/ping.py && sleep 0'"'"''
+<10.5.170.102> (0, '', '')
+<10.5.170.102> ESTABLISH SSH CONNECTION FOR USER: vishwana
+<10.5.170.102> SSH: EXEC sshpass -d12 ssh -C -o ControlMaster=auto -o ControlPersist=60s -o User=vishwana -o ConnectTimeout=10 -o ControlPath=/root/.ansible/cp/52c35ff375 -tt 10.5.170.102 '/bin/sh -c '"'"'/usr/bin/python /home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955/ping.py; rm -rf "/home/vishwana/.ansible/tmp/ansible-tmp-1503308190.91-60751479726955/" > /dev/null 2>&1 && sleep 0'"'"''
+<10.5.170.102> (0, '\r\n{"invocation": {"module_args": {"data": null}}, "changed": false, "ping": "pong"}\r\n', 'Shared connection to 10.5.170.102 closed.\r\n')
+10.5.170.102 | SUCCESS => {
+    "changed": false,
+    "invocation": {
+        "module_args": {
+            "data": null
+        }
+    },
+    "ping": "pong"
+}
+META: ran handlers
+META: ran handlers
+
+
+
+
+
+==> in the same manner , you can run the commands on target servers (mentioned in inverntory file) at a time  :-
+======================================================================================================================
+
+
+option : "-a" does the work for us.
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory -u vishwana -m command -a "df -h /" -k
+SSH password:
+11.16.34.65 | SUCCESS | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        32G   26G  4.9G  84% /
+
+10.5.170.102 | SUCCESS | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        28G   21G  6.0G  78% /
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+so in the same way , you can massive update and delete  and you can also remove "-m" from above:-
+==================================================================================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory -u vishwana -a "df -h /" -k
+SSH password:
+11.16.34.65 | SUCCESS | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        32G   26G  4.9G  84% /
+
+10.5.170.102 | SUCCESS | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        28G   21G  6.0G  78% /
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+==============================================================================================================================================================================================
+Regular Expressions :-
+======================================
+
+
+you can also regular expression in ansible
+ysqltest123:/opt/ADP/ANSIBLE/LAB # ansible lower* -i inventory2 -a "df -h"
+lower1 | SUCCESS | rc=0 >>
+Filesystem                                                            Size  Used Avail Use% Mounted on
+rootfs                                                                 32G   27G  3.9G  88% /
+udev                                                                  4.0G  136K  4.0G   1% /dev
+tmpfs                                                                 4.0G  232K  4.0G   1% /dev/shm
+/dev/sda1                                                              32G   27G  3.9G  88% /
+/dev/sdb1                                                             5.0G  783M  4.3G  16% /app
+cdlisilon01-nfs.cdl.rose.us.adp:/ifs/data/adpr/fit/wfn_fit_adpr_crpt   40G  6.0G   35G  15% /ezlmreports
+cdlisilon01-fs4.es.oneadp.com:/ifs/cdl01-t2-es/adprshare_fit          700G  608G   93G  87% /adpr
+
+lower2 | SUCCESS | rc=0 >>
+Filesystem                                                        Size  Used Avail Use% Mounted on
+/dev/sda3                                                          28G   23G  4.0G  85% /
+udev                                                              3.9G   96K  3.9G   1% /dev
+tmpfs                                                             3.9G  280K  3.9G   1% /dev/shm
+/dev/sda1                                                         194M   28M  157M  16% /boot
+cdlisilon01-nfs.cdl.rose.us.adp:/ifs/data/adpr/dit/WFN_ADPR_CRPT   25G  7.2G   18G  29% /ezlmreports
+cdlisilon01-fs4.es.oneadp.com:/ifs/cdl01-t2-es/adprshare_fit      700G  608G   93G  87% /adpr
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+==============================================================================================================================================================================================
+
+
+
+
+
+
+
+
+Password less ssh using ansible :-
+=======================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory1
+11.3.246.123 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017$
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all  -i inventory1 -a "df -h"
+11.3.246.123 | SUCCESS | rc=0 >>
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/sda3                   272G  115G  143G  45% /
+udev                        3.9G  100K  3.9G   1% /dev
+tmpfs                       3.9G  228K  3.9G   1% /dev/shm
+/dev/sda1                   194M   41M  144M  23% /boot
+172.24.233.50:/crtxml_prod   15T  9.9T  5.1T  66% /adpr
+172.24.233.50:/crtxml_prod   15T  9.9T  5.1T  66% /crpt
+wfnfs:/vol/wfn_adpr_crpt    1.9T  1.1T  753G  60% /ezlmreports
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+Gouping servers in inventory file :-
+=========================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory2
+lower1 ansible_ssh_host=11.16.34.65 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+lower2 ansible_ssh_host=10.5.170.102 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+higher ansible_ssh_host=11.3.246.123 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017$
+
+[lowerenv]
+lower1
+lower2
+
+
+[higherenv]
+higher
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible lowerenv -i inventory2 -a "hostname"
+lower1 | SUCCESS | rc=0 >>
+cdlftadpr01
+
+lower2 | SUCCESS | rc=0 >>
+cdldtwfn41arwb01
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible higherenv -i inventory2 -a "hostname"
+higher | SUCCESS | rc=0 >>
+dc2prwfn4arwb02
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+
+
+
+
+Gouping servers in inventory file with datacenter :-
+=======================================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory3
+lower1 ansible_ssh_host=11.16.34.65 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+lower2 ansible_ssh_host=10.5.170.102 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+higher ansible_ssh_host=11.3.246.123 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017$
+
+[lowerenv]
+lower1
+lower2
+
+
+[higherenv]
+higher
+
+[datacenter:children]
+lowerenv
+higherenv
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible datacenter  -i inventory3 -a "hostname"
+lower1 | SUCCESS | rc=0 >>
+cdlftadpr01
+
+lower2 | SUCCESS | rc=0 >>
+cdldtwfn41arwb01
+
+higher | SUCCESS | rc=0 >>
+dc2prwfn4arwb02
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+We can also create variable group :-
+=====================================
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory4
+lower1 ansible_ssh_host=11.16.34.65
+lower2 ansible_ssh_host=10.5.170.102
+higher ansible_ssh_host=11.3.246.123
+
+[lowerenv]
+lower1
+lower2
+
+
+[higherenv]
+higher
+
+[datacenter:children]
+lowerenv
+higherenv
+
+[datacenter:var]
+ansible_ssh_user=vishwana
+ansible_ssh_pass=Unix2017*
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible lowerenv -i inventory3 -a "hostname"
+lower1 | SUCCESS | rc=0 >>
+cdlftadpr01
+
+lower2 | SUCCESS | rc=0 >>
+cdldtwfn41arwb01
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+
+
+
+Configuarations :-
+========================
+
+$ANSIBLE_CONFIG
+
+./ansible.cfg
+
+~/.ansible.cfg
+
+
+/etc/ansible/ansible.cfg 
+
+
+default forks in ansible is 5
+For production we can recommend till 20 
+
+=> different configs  for ansible are available @ http://docs.ansible.com/ansible/latest/intro_configuration.html
+
+
+================================================================================================================================================
+=> we know that  ping will fail when the server is not in known hosts
+and if we want to make it work though the server is not in known hosts, see below  :-
+================================================================================================================================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory9
+prod2 ansible_ssh_host=11.3.250.70 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017$
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory9 -m ping
+prod2 | FAILED! => {
+    "failed": true,
+    "msg": "Using a SSH password instead of a key is not possible because Host Key checking is enabled and sshpass does not support this.  Please add this host's fingerprint to your known_hosts file to manage this host."
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+==> we can override using below setting in ansible.cfg
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat ansible.cfg
+[defaults]
+host_key_checking=false
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory9 -m ping
+prod2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+================================================================================================================================================
+
+
+
+How to create a Environment variable :-
+=====================================
+
+export ANSIBLE_HOST_KEY_CHECKING=FALSE
+ansible all -i inventory9 -m ping
+
+================================================================================================================================================
+
+
+
+================================================================================================================================================
+==> sometimes we install python 3 in out inventory server but 
+our ansible requires 2.x in suchcases you may need to uninstall 3 and install 2.x 
+========================================================================================================================================================================================================================================
+
+but you don't need to do that  ..using below you can get the python 2.x86_64
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # whereis python
+python: /usr/bin/python3.4 /usr/bin/python3.4m /usr/bin/python /usr/bin/python2.7 /usr/lib/python2.7 /usr/lib/python3.4 /usr/lib64/python2.7 /usr/lib64/python3.4 /usr/lib64/python /usr/include/python2.7 /usr/include/python3.4m /usr/share/man/man1/python.1.gz
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+add python interpreter in inventory file
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory9
+prod2 ansible_ssh_host=11.3.250.70 ANSIBLE_PYTHON_INTERPRETER="/usr/bin/python2.7" ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017$
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+================================================================================================================================================
+
+
+
+==============================================================================================================================================================================
+Modules :-
+==============================================================================================================================================================================
+
+-> there are 462 modules in Anisble
+
+-> to list down the modules in Ansible
+========================================================================================
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible-doc -l|grep -w "^ping"
+ping                               Try to connect to host, verify a usable python and return `pong' on success.
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible-doc -l|head
+a10_server                         Manage A10 Networks AX/SoftAX/Thunder/vThunder devices' server object.
+a10_server_axapi3                  Manage A10 Networks AX/SoftAX/Thunder/vThunder devices
+a10_service_group                  Manage A10 Networks AX/SoftAX/Thunder/vThunder devices' service groups.
+a10_virtual_server                 Manage A10 Networks AX/SoftAX/Thunder/vThunder devices' virtual servers.
+accelerate                         Enable accelerated mode on remote node
+acl                                Sets and retrieves file ACL information.
+add_host                           add a host (and alternatively a group) to the ansible-playbook in-memory inventory
+airbrake_deployment                Notify airbrake about app deployments
+aix_inittab                        Manages the inittab on AIX.
+alternatives                       Manages alternative programs for common commands
+
+
+================================================================================================================================================================================================
+--> To login into target server using anisble :-
+================================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory1
+11.3.246.123 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017$
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory1 -a "whoami" --extra-vars "ansible_sudo_pass=Unix2017$" --sudo
+11.3.246.123 | SUCCESS | rc=0 >>
+root
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+
+
+================================================================================================================================================================================================
+
+
+
+-> if you want to know about specific  Module.
+========================================================================================
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible-doc ping|tail
+EXAMPLES:
+# Test we can logon to 'webservers' and execute python with json lib.
+ansible webservers -m ping
+
+
+MAINTAINERS: Ansible Core Team, Michael DeHaan
+
+METADATA:
+        Status: ['stableinterface']
+        Supported_by: core
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+--> if you want to know about playbooks
+============================================
+ansible-doc -s <name>
+
+===============================================================================================================================================================================================================
+--> copy module is to copy from one server other :-
+=======================================
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory7
+10.5.172.93  ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory7 -m copy -a "src=./v dest=/home/vishwana/v_copy"
+10.5.172.93 | SUCCESS => {
+    "changed": true,
+    "checksum": "304441c2cf3ecc1c7f9d2792b1cedce39db23a54",
+    "dest": "/home/vishwana/v_copy",
+    "gid": 1252,
+    "group": "adpaenggadmins",
+    "md5sum": "270d55fc8ad6377a60c79044129b0bbc",
+    "mode": "0644",
+    "owner": "vishwana",
+    "size": 102,
+    "src": "/home/vishwana/.ansible/tmp/ansible-tmp-1503482336.43-240577131100800/source",
+    "state": "file",
+    "uid": 4873
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+cdldtwfn4arwb01:~ # ls -ltr /home/vishwana/v_copy
+-rw-r--r-- 1 vishwana adpaenggadmins 102 Aug 23 05:58 /home/vishwana/v_copy
+cdldtwfn4arwb01:~ #
+
+
+
+ansible-doc copy is for more info.
+===============================================================================================================================================================================================================
+--> services module is to start/stop services :-
+=================================================
+ansible-doc services
+
+
+-> if you want to stop and start apache on target server, we can use below.
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory7
+10.5.172.93  ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory7 -m "service" -a "name=httpd state=stopped"  --extra-vars "ansible_sudo_pass=Unix2017*" --sudo
+10.5.172.93 | FAILED! => {
+    "changed": false,
+    "failed": true,
+    "msg": "Could not find the requested service httpd: host"
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB # 
+
+
+
+
+To start :-
+==============
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory7 -m "service" -a "name=httpd state=started"  --extra-vars "ansible_sudo_pass=Unix2017*" --sudo
+10.5.172.93 | FAILED! => {
+    "changed": false,
+    "failed": true,
+    "msg": "Could not find the requested service httpd: host"
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+
+
+
+
+===============================================================================================================================================================================================================
+
+===============================================================================================================================================================================================================
+===> If you want to install any software on target use below :-
+=====================================================================
+
+
+1> check for the module "zypper"
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible-doc -l|grep zypper
+zypper                             Manage packages on SUSE and openSUSE
+zypper_repository                  Add and remove Zypper repositories
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+2> use below command
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat inventory8
+10.5.170.102 ansible_ssh_user=vishwana ansible_ssh_pass=Unix2017*
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory8 -m "zypper" -a "name=tree state=present"  --extra-vars "ansible_sudo_pass=Unix2017*" --sudo
+10.5.170.102 | SUCCESS => {
+    "changed": true,
+    "cmd": [
+        "/usr/bin/zypper",
+        "--quiet",
+        "--non-interactive",
+        "--xmlout",
+        "install",
+        "--type",
+        "package",
+        "--auto-agree-with-licenses",
+        "--no-recommends",
+        "--",
+        "tree"
+    ],
+    "name": [
+        "tree"
+
+
+
+3>if you re run above command , it throw you message that  command was succesful . how change status shows as "false"
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible all -i inventory8 -m "zypper" -a "name=tree state=present"  --extra-vars "ansible_sudo_pass=Unix2017*" --sudo
+10.5.170.102 | SUCCESS => {
+    "changed": false,
+    "name": [
+        "tree"
+    ],
+    "rc": 0,
+    "state": "present",
+    "update_cache": false
+}
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+
+
+===============================================================================================================================================================================================================
+
+
+
+
+
+==============================================================================================================================================================================================
+Playbooks :-
+=======================
+
+-----> How to execute a playbook.
+
+ansible-playbook playbook.yml -i "inventory file"
+
+
+(OR)
+
+ansible-playbook playbook.yml ( if incase you have already mentioned hostfile as inventory in ansible.cfg as shown below)
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat ansible.cfg
+[defaults]
+host_key_checking=false
+hostfile = inventory
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+---> if in case a play has failed few hosts and you have identified the issue and fixed it.
+Now  you can run the play on failed using below.
+
+
+--limit @/home/vishwana/v.txt
+
+this file contains the hosts list  on which the play has failed.
+
+
+
+
+=========================================================================================================================================================================================================
+How to copy a file from one to another using playbook.
+=====================================================================
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat ansible.cfg
+[defaults]
+host_key_checking=false
+hostfile = inventory7
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # cat play
+---
+- hosts: all
+  sudo: yes
+  tasks:
+  - name: copy function test
+    copy: src=./v
+          dest=/home/vishwana/v_Cop2
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB # ansible-playbook play
+
+PLAY [all] ***************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************************************************************
+ok: [10.5.172.93]
+
+TASK [copy function test] ************************************************************************************************************************************************************************
+changed: [10.5.172.93]
+
+PLAY RECAP ***************************************************************************************************************************************************************************************
+10.5.172.93                : ok=2    changed=1    unreachable=0    failed=0
+
+mysqltest123:/opt/ADP/ANSIBLE/LAB #
+
+
+
+
+===============================================================================================================================================================================================================
+
+
+--> include is the another option with playbook
+
+using this we can include other playbook  or other variable files in other playbooks.
+
+
+Ex:-
+==========
+
+tasks:
+ - include: play.yml
+ - include_vars: vars.yml
+ 
+ 
+ 
+--> you can create user interactive ansible as shown below.
+ 
+ 
+- hosts: all
+  vars_propmpt:
+  - name: sitename 
+    prompt : "what is the new site name"
+	
+  tasks:
+  - debug: msg="The site name is {{ sitename }}"
+  
+
+
+--> we can also have conitional statements in play books like below.
+
+- hosts: all
+
+  tasks:
+  - zypper: name="httpd" state="present"
+     when: ansible_host_family == "OpenSuse"
+	 
+  
+  - apt: name="httpd" state="present"
+     when: ansible_host_family == "Debian"
+	 
+	 
+	 
+ 
+==============================================================================================================================================================================================
+SSHPASS issue:-
+==================
+
+sshpass is required to run ansible use "-c"  if you face any issue installing sshpass.
+
+Ex:-
+
+
+vishwana@cdldvadavbu0001:~> ansible 11.3.252.225 -i UAT -m shell -a "df -h" --sudo
+11.3.252.225 | FAILED | rc=-1 >>
+to use the 'ssh' connection type with passwords, you must install the sshpass program
+
+vishwana@cdldvadavbu0001:~>
+
+
+vishwana@cdldvadavbu0001:~> ansible 11.3.252.225 -i UAT -m shell -a "df -h" --sudo -c paramiko
+11.3.252.225 | SUCCESS | rc=0 >>
+Filesystem                                    Size  Used Avail Use% Mounted on
+/dev/sda3                                      75G   21G   51G  29% /
+udev                                          3.9G   96K  3.9G   1% /dev
+tmpfs                                         3.9G  224K  3.9G   1% /dev/shm
+/dev/sda1                                     194M   41M  144M  23% /boot
+dc2f12c1nasv3.whc.dc02.us.adp:/hrii_uat_adpr  4.5T  1.4T  3.1T  32% /adpr
+172.24.233.50:/crtxml_prod                     15T   13T  2.6T  83% /mas_xml
+172.24.233.51:/adpr_out_prod                   22T   17T  5.2T  77% /nas_xml
+11.3.201.14:/adpr_out_prod                     12T  1.9T   11T  16% /test_nas_xml
+dc2f12c1nasv3.whc.dc02.us.adp:/hrii_uat_adpr  4.5T  1.4T  3.1T  32% /adpr_mes
+
+
+
+To Become a user and run some task :-
+==========================================
+
+vishwana@cdldvadavbu0001:/opt/ADP/SPARK> cat inventory
+cdladpihdpgw01.es.ad.adp.com ansible_ssh_user=vishwana ansible_ssh_pass=Unix2018* ansible_become_user=cdlsparkgwuser ansible_become_pass=Unix2018*
+vishwana@cdldvadavbu0001:/opt/ADP/SPARK>  ansible all -i inventory -c paramiko -m shell -a "whoami" --become
+cdladpihdpgw01.es.ad.adp.com | SUCCESS | rc=0 >>
+cdlsparkgwuser
+
+vishwana@cdldvadavbu0001:/opt/ADP/SPARK>
+
+
+
+
