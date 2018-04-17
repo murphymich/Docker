@@ -23,3 +23,37 @@ curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O "https://artifactoryprod.es.ad.
 curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Dockerfiles
 
 
+
+
+
+
+Examples :-
+=========
+
+
+
+samples :-
+=========
+
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T AR_APP_PACKAGING.sh "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/"
+-rwxr-xr-x 1 vishwana adpaenggadmins       209 Dec 30 01:19 runScheduler.sh
+-rwxr-xr-x 1 vishwana adpaenggadmins       239 Dec 30 01:19 runListener.sh
+-rwxr-xr-x 1 vishwana adpaenggadmins       195 Dec 30 01:19 runBridge.sh
+	
+	
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T runScheduler.sh "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/"
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T runListener.sh "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/"
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T runBridge.sh "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/"
+	
+	
+-rw-r--r-- 1 vishwana adpaenggadmins      3842 Dec 30 01:20 Dockerfile_app
+-rw-r--r-- 1 vishwana adpaenggadmins      2644 Dec 30 01:20 Dockerfile_bridge
+-rw-r--r-- 1 vishwana adpaenggadmins      2757 Dec 30 01:21 Dockerfile_rle
+-rw-r--r-- 1 vishwana adpaenggadmins      2658 Dec 30 01:21 Dockerfile_sched
+
+
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ADP "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Self-Service-Tools/"
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T Dockerfile_bridge "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Dockerfiles/"
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T Dockerfile_rle "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Dockerfiles/"
+	curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T Dockerfile_sched "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Dockerfiles/"
+
