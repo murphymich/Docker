@@ -1,0 +1,145 @@
+Jenkins :-
+=========
+
+#!/usr/bin/ksh
+cd /opt/ARAPPBUILD/
+mkdir -p ARimagesbuild ; cd ARimagesbuild
+cp hosts_bkp hosts
+echo "ansible_ssh_user=$username" >>  hosts
+echo "ansible_ssh_pass=$password" >> hosts
+echo "ansible_sudo_pass=$password" >>  hosts
+ansible-playbook -i hosts test.yml
+rm -f hosts
+
+
+OR
+
+
+#!/usr/bin/ksh
+cd /opt/ARAPPBUILD/
+mkdir -p ARimagesbuild ; cd ARimagesbuild
+cp hosts_bkp hosts
+echo "ansible_ssh_user=$username" >>  hosts
+echo "ansible_ssh_pass=$password" >> hosts
+echo "ansible_sudo_pass=$password" >>  hosts
+ansible all  -i hosts -m shell -a "sh IMAGEBUILD.sh $VERSION" --sudo
+rm -f hosts
+
+
+
+
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T IMAGEBUILD.sh "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/"
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ./app/readme.txt "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/supportedfiles/readme_app.txt"
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ./bridge/readme.txt "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/supportedfiles/readme_bridge.txt"
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ./listener/readme.txt "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/supportedfiles/readme_rle.txt"
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ./scheduler/readme.txt "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/supportedfiles/readme_sched.txt"
+
+
+
+
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/IMAGEBUILD.sh"
+
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/AR_APP_PACKAGING.sh"
+
+
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/dependencies/instantclient_12_2_sdk.tar.gz"
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/dependencies/instantclient_12_2.tar.gz"
+
+
+
+
+IMAGEBUILD.sh
+
+
+cd /opt/ADP/jenkins_bkp
+tar -cf jenkins_full_backup_$date_only.tar.gz FULL-*;
+ls -ltrh;
+
+
+#Deleting the previous LatestBackup file.
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -XDELETE "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Jenkins/jenkins_latest_backup.tar.gz";
+
+#Backing the file to the LatestBakup folder
+mv jenkins_full_backup_$date_only.tar.gz jenkins_latest_backup.tar.gz;
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T jenkins_latest_backup.tar.gz "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Jenkins/";
+
+
+rm -rf jenkins_full_backup.tar.gz;
+
+
+
+Sparse clone VS branching:-
+=============================
+
+122 secs.
+
+MyServer:/tmp # date ; git clone -b release/AR_15.00.00  https://bitbucket.es.ad.adp.com/scm/adpr/datacloud-docker.git ; date
+Thu Jan  4 00:31:12 EST 2018
+Cloning into 'datacloud-docker'...
+remote: Counting objects: 449, done.
+remote: Compressing objects: 100% (386/386), done.
+remote: Total 449 (delta 153), reused 121 (delta 10)
+Receiving objects: 100% (449/449), 284.04 MiB | 2.49 MiB/s, done.
+Resolving deltas: 100% (153/153), done.
+Thu Jan  4 00:33:14 EST 2018
+MyServer:/tmp #
+
+
+
+121 secs.
+
+date ; git clone --depth 1 https://bitbucket.es.ad.adp.com/scm/adpr/datacloud-docker.git ar ;cd ar ;git filter-branch --prune-empty --subdirectory-filter apps/ar HEAD; date
+
+
+MyServer:/tmp # date ; git clone --depth 1 https://bitbucket.es.ad.adp.com/scm/adpr/datacloud-docker.git ar ;cd ar ;git filter-branch --prune-empty --subdirectory-filter apps/ar HEAD; date
+Thu Jan  4 00:40:43 EST 2018
+Cloning into 'ar'...
+remote: Counting objects: 163, done.
+remote: Compressing objects: 100% (123/123), done.
+remote: Total 163 (delta 21), reused 56 (delta 4)
+Receiving objects: 100% (163/163), 246.08 MiB | 2.34 MiB/s, done.
+Resolving deltas: 100% (21/21), done.
+Rewrite 9e994b772bbb5735c4666e5e1acf85827e700a01 (1/1) (0 seconds passed, remaining 0 predicted)
+Ref 'refs/heads/master' was rewritten
+Thu Jan  4 00:42:42 EST 2018
+MyServer:/tmp/ar #
+
+
+
+
+
+
+
+
+
+MyServer:/tmp # date ; git clone https://bitbucket.es.ad.adp.com/scm/adpr/engineering.git ; date
+Thu Jan  4 01:07:32 EST 2018
+Cloning into 'engineering'...
+remote: Counting objects: 2451, done.
+remote: Compressing objects: 100% (949/949), done.
+remote: Total 2451 (delta 1496), reused 2067 (delta 1330)
+Receiving objects: 100% (2451/2451), 798.74 MiB | 2.71 MiB/s, done.
+Resolving deltas: 100% (1496/1496), done.
+Thu Jan  4 01:12:45 EST 2018
+MyServer:/tmp #
+
+
+ MyServer:/tmp # date ; git clone --depth 1 https://bitbucket.es.ad.adp.com/scm/adpr/engineering.git  ar ;cd ar ;git filter-branch --prune-empty --subdirectory-filter apps/ar  HEAD; date
+Thu Jan  4 01:51:59 EST 2018
+Cloning into 'ar'...
+remote: Counting objects: 485, done.
+remote: Compressing objects: 100% (305/305), done.
+remote: Total 485 (delta 189), reused 385 (delta 162)
+Receiving objects: 100% (485/485), 1.24 MiB | 0 bytes/s, done.
+Resolving deltas: 100% (189/189), done.
+Rewrite ce8dd5786d5cb4be6cf9eaf0f8eaa0c5fb37a6f0 (1/1) (0 seconds passed, remaining 0 predicted)
+Ref 'refs/heads/master' was rewritten
+Thu Jan  4 01:52:02 EST 2018
+
+
+
+ansible all -i DIT2IPE1 -m shell -a "sed -i '/app_deploy_recycle.sh/ s/\/apps\/HPOO/\/opt\/ADP\/deployment\/CI/g' /etc/init.d/ADPRAPP" --sudo
+ansible all -i DIT2IPE1 -m shell -a "sed -i 's/ > / recycle > /g' /etc/init.d/ADPRAPP" --sudo
+ansible all -i DIT2IPE1 -m shell -a "sed -i 's/ recycle recycle / recycle /g' /etc/init.d/ADPRAPP" --sudo
+ansible all -i DIT2IPE1 -m shell -a "cat /etc/init.d/ADPRAPP|grep -v '^#'" --sudo
+
