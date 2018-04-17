@@ -1,0 +1,1208 @@
+Latest :- Docker 1.12
+=====================================================================================================================================================================================================================================================
+Docker for windows :-
+====================
+when we talk about Docker for windows 
+client will be "windows" but server will be "Linux" machine (Hyper V VM)
+
+Hyper -v should be enabled if you want run docker on Windows
+control pannel => programs and features => turn windows features on or off => enable Hyper -v
+and
+restart machine => F12 => enable intel VT /AMD v to enable Hyper -v
+
+=> To install docker => docker.com => get docker
+=> once installation is completed => check docker version using "docker version"
+
+
+=====================================================================================================================================================================================================================================================
+
+Docker for Linux :-
+==================
+
+ubuntu :-
+========
+wget -qo- https://get.docker.com/ |sh 
+
+
+
+Open suse :-
+==========
+
+
+Please note that  "if you are facing any issues while executing below commands , please remove unwanted repos using zypper lr and zypper rr "reponame
+
+
+mysqltest123:~ # zypper in docker
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following NEW package is going to be installed:
+  docker
+
+The following package is not supported by its vendor:
+  docker
+
+1 new package to install.
+Overall download size: 10.2 MiB. Already cached: 0 B. After the operation, additional 52.0 MiB will be used.
+Continue? [y/n/...? shows all options] (y): y
+Retrieving package docker-1.12.6-90.1.x86_64                                                                                                                (1/1),  10.2 MiB ( 52.0 MiB unpacked)
+Retrieving: docker-1.12.6-90.1.x86_64.rpm .................................................................................................................................................[done]
+Checking for file conflicts: ..............................................................................................................................................................[done]
+(1/1) Installing: docker-1.12.6-90.1.x86_64 ...............................................................................................................................................[done]
+Additional rpm output:
+Updating /etc/sysconfig/docker...
+
+
+mysqltest123:~ #
+
+=====================================================================================================================================================================================================================================================
+Configure Docker Environment in systemd :-
+=========================================
+
+Docker will not be able to download images from the Docker Hub unless its environment is set up appropriately with the corporate proxy.  The Docker environment can be configured by adding environment variables in the configuration for systemd.
+
+Run the following commands to create the file:
+sudo mkdir /etc/systemd/system/docker.service.d
+
+sudo vi /etc/systemd/system/docker.service.d/http-proxy.conf 
+Paste the following into the file:
+[Service]
+Environment="http_proxy=http://paascloud:8e)P4m)I5y(F9@usproxy.es.oneadp.com:8080"
+Environment="https_proxy=http://paascloud:8e)P4m)I5y(F9@usproxy.es.oneadp.com:8080"
+Environment="no_proxy=.adp.com,localhost,.whc,.adp,.adpcorp.com,192.168.0.0/16,127.0.0.1,.oneadp.com,.es.ad.adp.com" 
+
+Save the file, and enter the following commands to reload the environment settings and verify that the environment has been set up:
+
+sudo systemctl daemon-reload
+sudo systemctl show --property=Environment docker
+
+=====================================================================================================================================================================================================================================================
+Enable and start Docker  :-
+==============================
+
+
+To make the Docker service start up when the VM is restarted, it must be enabled.  Run the following commands to enable the Docker service and start it:
+sudo systemctl enable docker
+sudo systemctl start docker 
+
+
+
+mysqltest123:~ # docker version
+Client:
+ Version:      1.12.6
+ API version:  1.24
+ Go version:   go1.6.1
+ Git commit:   78d1802
+ Built:        Wed Feb 15 15:00:28 2017
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      1.12.6
+ API version:  1.24
+ Go version:   go1.6.1
+ Git commit:   78d1802
+ Built:        Wed Feb 15 15:00:28 2017
+ OS/Arch:      linux/amd64
+mysqltest123:~ #
+
+
+=====================================================================================================================================================================================================================================================
+
+Add Users to the Docker group (Optional) :-
+===========================================
+
+
+Most users should already have sudo access on the CDL VMs which will allow them to run Docker, so this step isn't strictly necessary.  Adding the user to the docker group will allow the user to run Docker without needing to use sudo.
+To add a user to the Docker group, run the following command:
+sudo /usr/sbin/usermod -a -G docker <userid>
+
+
+=====================================================================================================================================================================================================================================================
+To check Docker is running :-
+==================================
+
+mysqltest123:~ # docker run hello-world
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://cloud.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/engine/userguide/
+
+mysqltest123:~ #
+
+
+
+=====================================================================================================================================================================================================================================================
+Containers :-
+================
+
+=> running a image is called as "container"
+=> when u run any image it checks locally if not found , it will try pull from docker hub.
+
+mysqltest123:~ # docker run hello
+Unable to find image 'hello:latest' locally
+Pulling repository docker.io/library/hello
+docker: Error: image library/hello:latest not found.
+See 'docker run --help'.
+mysqltest123:~ #
+
+
+=> If you want to see containers running  = > dcoker info|head
+
+
+=> To list images :-
+=======================
+
+docker imapges
+
+=> To pull images :-
+======================
+
+docker pull "imagename"
+
+
+=> To delete image :-
+=====================
+
+docker rmi "imagename"
+
+  rm        Remove one or more containers
+  rmi       Remove one or more images
+  
+=> To delete all images :-
+===========================
+
+docker rmi $(docker images -a -q)
+
+
+
+=> to list the containers :-
+==============================
+
+docker ps
+
+=> to list containers that was run :-
+===================================
+
+docker ps -a
+
+=> To list the latest container that was run :-
+===============================================
+
+docker ps -l
+
+
+
+
+
+=====================================================================================================================================================================================================================================================
+
+==>  Theory of pulling and running containers 
+===============================================
+
+1> Client  and  Docker daemon
+
+
+2> when we  run "docker run hello-world" client makes API calls to docker daemon  this is called as "docker engine"
+
+3>  when client calls docker daemon , daemon checks for hello=-world image on local. if not found , it pulls images from docker hub.
+
+4> once the docker image is pulled. it runs container . once done, container will move into exited mode.
+
+
+=====================================================================================================================================================================================================================================================
+==> Container and images :-
+================================
+
+
+-> when we pull images we run like below
+
+docker pull ubuntu
+
+-> but if in case, you want to run pull images with specific version, we use
+
+docker pull ubuntu:14.04
+
+
+-> these images are pulled "hub.docker.com" => login =>click on explore for official images.
+
+
+-> to see images that are downloaded, we don't know where exactly these images are downloaded it depends on docker version or linux version.
+
+
+docker images --tree => this will give u layers info as well.
+docker history <imagename> => to get the hostory of image how it was build (mean what r the cmds that were ececuted to build that image).
+
+
+
+
+mysqltest123:/etc # docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hello-world         latest              05a3bd381fc2        5 weeks ago         1.84 kB
+<none>              <none>              4439c6e01381        8 weeks ago         862.7 MB
+<none>              <none>              dc3e50688786        9 weeks ago         816.4 MB
+<none>              <none>              308a50cff001        9 weeks ago         816.4 MB
+gradle              latest              332a96af59c8        11 weeks ago        815 MB
+alpine              latest              7328f6f8b418        3 months ago        3.962 MB
+hello-world         <none>              1815c82652c0        4 months ago        1.84 kB
+java                openjdk-8u45-jdk    6c8bf95a6d6c        2 years ago         816.4 MB
+mysqltest123:/etc #
+
+
+
+mysqltest123:/etc # docker pull opensuse
+
+Using default tag: latest
+latest: Pulling from library/opensuse
+
+ceecfa90fed5: Pull complete
+Digest: sha256:3eb8fd9494913c0d28e82afd82204052bd0ac78b7580f75ffbc7e2af480d3dd1
+Status: Downloaded newer image for opensuse:latest
+mysqltest123:/etc #
+mysqltest123:/etc # docker images|egrep "REP|opensuse"
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+opensuse            latest              54ae12a89367        4 weeks ago         107.9 MB
+mysqltest123:/etc #
+
+
+==> if you want to delete any image
+
+mysqltest123:/etc # docker rmi 4439c6e01381
+
+=====================================================================================================================================================================================================================================================
+
+Container Lifecycle :-
+======================================================
+
+==> To stop any  container
+
+docker stop "container"
+
+=> to start any container 
+
+docker start "container"
+
+=====================================================================================================================================================================================================================================================
+=> if you run a container in background , usebelow (OR) how to run jenkins as container :-
+===========================================================================================
+
+
+a>  check for image name
+
+mysqltest123:~ # docker  images |grep jenkins
+jenkins             latest              861760a10fdb        9 days ago          811.7 MB
+mysqltest123:~ #
+
+
+
+
+
+
+
+b> 
+
+
+
+-d is for run it in background
+
+50000:50000 map port 50000 on docker host  to thr port 50000 on isnide container.
+
+docker run -d --name "myDCJenkins" -p 50000:50000 --net host -v jenkins_home:/var/jenkins_home jenkins:latest 
+
+
+mysqltest123:/etc # docker run -d --name "myDCJenkins" -p 50000:50000 --net host -v jenkins_home:/var/jenkins_home jenkins:latest
+3e8a0c16390b1360f4d72a9ad9c0de5e9a12d343311e0b2c1a1d17e48a4fce26
+mysqltest123:/etc #
+
+http://mysqltest123:8080
+/var/jenkins_home/secrets/initialAdminPassword
+
+the 8080 is the one jenkins use to communicate the ui
+the 50000 is used to the build executor
+--net command  -- THis is the one that says to the container how it can connect to the hosts network otherwise you won't have internet access within the container
+
+
+mysqltest123:/etc # docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+3e8a0c16390b        jenkins:latest      "/bin/tini -- /usr/lo"   3 minutes ago       Up 3 minutes                            myDCJenkins
+67a3cfd194e4        ubuntu              "/bin/bash"              About an hour ago   Up About an hour                        ubuntu_check
+mysqltest123:/etc #
+
+
+URLS :-
+====
+
+https://github.com/jenkinsci/docker/blob/master/README.md 
+
+
+
+=====================================================================================================================================================================================================================================================
+
+c> so far we have -d for run in background...if you want it tomake interactive user "it"
+===============================================================================================
+
+
+mysqltest123:/etc # docker run -it --name "ubuntu_check" ubuntu
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+
+ae79f2514705: Pull complete
+5ad56d5fc149: Pull complete
+170e558760e8: Pull complete
+395460e233f5: Pull complete
+6f01dc62e444: Pull complete
+Digest: sha256:506e2d5852de1d7c90d538c5332bd3cc33b9cbd26f6ca653875899c505c82687
+Status: Downloaded newer image for ubuntu:latest
+root@67a3cfd194e4:/#
+
+
+
+  "now am inside container ""
+  "If you press exit , will exit from container ..press ctrl P+Q to safely move out from container"
+  
+
+
+
+root@67a3cfd194e4:/# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 15:54 ?        00:00:00 /bin/bash
+root        11     1  0 15:57 ?        00:00:00 ps -ef
+root@67a3cfd194e4:/# ps -efmysqltest123:/etc # docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                         NAMES
+67a3cfd194e4        ubuntu              "/bin/bash"              4 minutes ago       Up 4 minutes                                                      ubuntu_check
+6bf7b5cedb72        jenkins             "/bin/tini -- /usr/lo"   13 minutes ago      Up 13 minutes       8080/tcp, 50000/tcp, 0.0.0.0:8082->8082/tcp   mydcjenkins
+mysqltest123:/etc #
+
+=====================================================================================================================================================================================================================================================
+==> If you want to stop all docker containers :-
+=================================================
+
+docker stop $(ps -aq)
+
+
+
+==> If you want to start  all docker containers :-
+=================================================
+
+docker start  $(ps -aq)
+
+=> if you want to remove all docker containers :-
+===============================================
+
+docker rm $(ps -aq)
+
+=> if you  want to delete all images :-
+=========================================
+
+docker rmi $(docker images -q)
+
+=====================================================================================================================================================================================================================================================
+==> Features of Docker :-
+=================================
+
+a> SWARM MODE
+b> MICRO SERVICES
+
+
+=====================================================================================================================================================================================================================================================
+SWARM MODE:-
+============
+
+-> Swarm mode is available with docker 1.12
+
+-> A collection of docker engines collected into a cluster is called as swarm
+
+-> 1 cluster = 1 swarm
+
+-> Manager nodes maintains swarm -> H/A -recommended 3 or 5 => only one leader
+
+-> worker nodes will perform  the tasks
+
+
+
+=> Create  a swarm :-
+========================================
+
+-> pick  6 linux servers on which docker 1.12 is installed
+-> consider first them as managers
+-> next three as workers
+-> all of them capable of interacting with each other
+
+-> To initiate swarm on manager1 using  command "docker swarm init --advertise-addr ipaddress:2377 --listen-addr ipaddress:2377 "
+		--advertise-addr is optional and it is used to expose the ip address
+
+		
+default docker engine port: 2375
+default docker secure engine port: 2376
+default swarm port: 2377
+
+-> once after you execute above , 
+	a> it will create that server as manager 
+	b> it will give you commands to add other server as worker nodes ( you may have to run the commands on those servers)
+	c> Also, gives the commands to add servers as mangers ( you may have to run the commands on those servers)
+
+	
+commands :-
+=========
+
+docker swarm join-token manager
+
+docker swarm join-token worker
+
+-> to check the nodes : docker node ls
+
+-> you have joined a server as worker and  you want to promote it to manager	
+		a> if so, got manger node server then type in "docker node ls" get the node id of worker
+		b> then docker node promote "nodeid"
+		c> then docker node ls
+		
+
+
+===============================================================================================================================================================================
+EXAMPLE :-
+================
+
+mysqltest123 : Manager1
+hadoop3 : manager2
+haddop1 : worker1
+
+		
+mysqltest123 :-
+==================
+------------>
+
+mysqltest123:/var # docker node ls
+Error response from daemon: This node is not a swarm manager. Use "docker swarm init" or "docker swarm join" to connect this node to swarm and try again.
+mysqltest123:/var #
+
+
+------------>
+
+mysqltest123:/var # docker swarm init
+Swarm initialized: current node (f1s57fujtz0ntfbcvb68b7pek) is now a manager.
+
+------------> To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-4p06dgallsoxx8efxhqujrgc66e3ryhy4vcfmf0881nhjn5sf1-cevw2hs8rj0vgesxljdmnogrq \
+    51.19.156.121:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+------------>
+
+
+mysqltest123:/var # docker node ls
+ID                           HOSTNAME      STATUS  AVAILABILITY  MANAGER STATUS
+f1s57fujtz0ntfbcvb68b7pek *  mysqltest123  Ready   Active        Leader
+mysqltest123:/var #
+
+
+------------>
+
+mysqltest123:/var # docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-4p06dgallsoxx8efxhqujrgc66e3ryhy4vcfmf0881nhjn5sf1-8eizte9zr0w62zdzirru583qp \
+    51.19.156.121:2377
+
+mysqltest123:/var #
+
+Adding hadoop3 as manager :-
+=================================
+take above command run it as like below.
+
+------------>
+
+hadoop3:~ # docker swarm join     --token SWMTKN-1-4p06dgallsoxx8efxhqujrgc66e3ryhy4vcfmf0881nhjn5sf1-8eizte9zr0w62zdzirru583qp     51.19.156.121:2377 --advertise-addr 11.16.42.18:2377 --listen-addr 11.16.42.18:2377
+This node joined a swarm as a manager.
+hadoop3:~ #
+
+
+Adding hadoop1 as worker :-
+===========================
+
+---> run "docker swarm join-token worker" on mysqltest123  to get the command 
+
+
+------------>
+
+mysqltest123:/var # docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-4p06dgallsoxx8efxhqujrgc66e3ryhy4vcfmf0881nhjn5sf1-cevw2hs8rj0vgesxljdmnogrq \
+    51.19.156.121:2377
+
+mysqltest123:/var #
+
+
+---->
+hadoop1:~ # docker swarm join \
+>     --token SWMTKN-1-4p06dgallsoxx8efxhqujrgc66e3ryhy4vcfmf0881nhjn5sf1-cevw2hs8rj0vgesxljdmnogrq \
+>     51.19.156.121:2377\
+>  --advertise-addr 11.16.34.74:2377  --listen-addr 11.16.34.74:2377
+This node joined a swarm as a worker.
+hadoop1:~ #
+
+
+
+Now go  back to mysqltest123 :-
+==================================
+
+mysqltest123:/var # docker node ls
+ID                           HOSTNAME      STATUS  AVAILABILITY  MANAGER STATUS
+3bw06u7xxpog5jj7kqenkcsku    hadoop1       Ready   Active
+7n1b30bb43m71v7aqt4x6n3lx    hadoop3       Ready   Active        Reachable
+bech3ferdi7y5ti7g1qgwfe1p    hadoop1       Down    Active
+f1s57fujtz0ntfbcvb68b7pek *  mysqltest123  Ready   Active        Leader
+
+mysqltest123:/var # docker node rm bech3ferdi7y5ti7g1qgwfe1p
+bech3ferdi7y5ti7g1qgwfe1p
+
+
+mysqltest123:/var # docker node ls
+ID                           HOSTNAME      STATUS  AVAILABILITY  MANAGER STATUS
+3bw06u7xxpog5jj7kqenkcsku    hadoop1       Ready   Active
+7n1b30bb43m71v7aqt4x6n3lx    hadoop3       Ready   Active        Reachable
+f1s57fujtz0ntfbcvb68b7pek *  mysqltest123  Ready   Active        Leader
+mysqltest123:/var #
+
+
+
+
+
+---> To get the list number of managers an workers :-
+======================================================
+
+the one which is having  blank in manager status  is WORKER
+
+
+mysqltest123:/var # docker node ls
+ID                           HOSTNAME      STATUS  AVAILABILITY  MANAGER STATUS
+3bw06u7xxpog5jj7kqenkcsku    hadoop1       Ready   Active
+7n1b30bb43m71v7aqt4x6n3lx    hadoop3       Ready   Active        Reachable
+f1s57fujtz0ntfbcvb68b7pek *  mysqltest123  Ready   Active        Leader
+mysqltest123:/var #
+
+
+
+(OR )
+
+mysqltest123:/var # docker info|egrep -i "manager|node"
+WARNING: No swap limit support
+WARNING: No kernel memory limit support
+ NodeID: f1s57fujtz0ntfbcvb68b7pek
+ Is Manager: true
+ Managers: 2
+ Nodes: 3
+ Node Address: 51.19.156.121
+mysqltest123:/var #
+
+
+
+
+=====================================================================================================================================================================================================================================================
+SERVICES :-
+==========================
+
+
+-> to simplify production deployments, services was introduced in Docker 1.12
+
+-> we list the serviices using : docker service ls
+
+-> To create the services :
+
+ I want to create a service "jenkins" such that it should run all three (2 managers 1 worker)
+ 
+ 
+mysqltest123:~ # docker service create --name "jenkinsservice" -p 7800:7800 --replicas 3 --network ps-net jenkins:latest
+0px80jqy2f2jani3umh86arvs
+mysqltest123:~ #
+
+ <HERE ps-net  netwrok created by me  using "docker network ls ; docker network create -d overlay ps-net" >
+
+mysqltest123:~ # docker service ls
+ID            NAME            REPLICAS  IMAGE           COMMAND
+0px80jqy2f2j  jenkinsservice  3/3       jenkins:latest
+mysqltest123:~ #
+
+
+-> To see the replicas.
+
+
+mysqltest123:~ # docker service ps jenkinservice
+ID                         NAME             IMAGE    NODE          DESIRED STATE  CURRENT STATE               ERROR
+0ods4m0oo60wm3tugor46avcu  jenkinservice.1  jenkins  hadoop3       Running        Running about a minute ago
+7gs58vbaf9jboa5xqxh2cu1fd  jenkinservice.2  jenkins  mysqltest123  Running        Running about a minute ago
+48kexgqymqj8rkm76b22np224  jenkinservice.3  jenkins  hadoop1       Running        Running about a minute ago
+mysqltest123:~ #
+
+
+
+--> Now jenkins is accessible from anyone of above servers check using "hadoop1:8080 or hadoop:8080    or mysqltest123:8080  "
+
+
+---> Routing mesh is something  does load balancer for us.
+
+
+
+--> if you want upgrade replicas from 5 to 7 then use
+
+docker service scale jenkins=7
+
+ 
+ mysqltest123:~ # docker service scale jenkinservice=7
+jenkinservice scaled to 7
+mysqltest123:~ #  docker service ps jenkinservice
+ID                         NAME             IMAGE    NODE          DESIRED STATE  CURRENT STATE           ERROR
+0ods4m0oo60wm3tugor46avcu  jenkinservice.1  jenkins  hadoop3       Running        Running 21 minutes ago
+7gs58vbaf9jboa5xqxh2cu1fd  jenkinservice.2  jenkins  mysqltest123  Running        Running 21 minutes ago
+48kexgqymqj8rkm76b22np224  jenkinservice.3  jenkins  hadoop1       Running        Running 21 minutes ago
+d5rjhr1y09g1jrk371l3q81kf  jenkinservice.4  jenkins  hadoop3       Running        Running 36 seconds ago
+d7gi5zf4bby78jh7ptlnvysgr  jenkinservice.5  jenkins  mysqltest123  Running        Running 1 seconds ago
+20var32rp62nrs0g6ohook34m  jenkinservice.6  jenkins  hadoop1       Running        Running 1 seconds ago
+bszzrd3bzvleps760qzxch2s5  jenkinservice.7  jenkins  hadoop1       Running        Running 2 seconds ago
+mysqltest123:~ #
+
+
+
+==> making a node down 
+
+
+
+=====================================================================================================================================================================================================================================================
+
+Rolling updates :-
+=====================
+
+
+
+--> create a network :-
+======================
+
+mysqltest123:~ # docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+c378198a18c4        bridge              bridge              local
+2cd38f04126b        docker_gwbridge     bridge              local
+97a954e961c0        host                host                local
+761cahgdv27w        ingress             overlay             swarm
+4cb82835bd57        none                null                local
+mysqltest123:~ #
+
+
+mysqltest123:~ # docker network create -d overlay ps-net
+ehl4ouciyvju3gwqjgo822ukw
+
+
+mysqltest123:~ # docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+c378198a18c4        bridge              bridge              local
+2cd38f04126b        docker_gwbridge     bridge              local
+97a954e961c0        host                host                local
+761cahgdv27w        ingress             overlay             swarm
+4cb82835bd57        none                null                local
+ehl4ouciyvju        ps-net              overlay             swarm
+mysqltest123:~ #
+
+  
+  
+ --> default network is bridge
+
+-> if you want to create network  run container as host 
+ 
+ docker run -it --net =host ubuntu:14.04 /bin/bash
+ 
+ 
+ ->  to create network
+ docker network create "simple-network"
+ docker network  inspect "simple-network"
+ 
+ -> you have created two container with bridge and if you want to create own subnets , use below.
+  
+ docker network create -d bridge  --subnet 172.0.0.7/16 isolated_new
+ 
+ docker network connect  isolated_new  container2
+ 
+ docker nbetwork inspect container2
+ 
+ 
+ 
+ 
+
+
+
+================================================================================================================================================================================================
+
+Docker tool box installation :-
+=================================
+
+mysqltest123:~ # curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   617    0   617    0     0   1616      0 --:--:-- --:--:-- --:--:--  1619
+100 8648k  100 8648k    0     0  3335k      0  0:00:02  0:00:02 --:--:-- 4507k
+
+
+mysqltest123:~ # chmod +x /usr/local/bin/docker-compose
+
+====================================================================================================================================================================================
+
+-> Docker needs root access to work.
+
+
+====================================================================================================================================================================================
+if you want give docker access to non root user :-
+==================================================
+
+----> Docker binds to socket 
+ls -ltr /run|grep docker
+srw-rw----  1 root     docker      0 Oct 18 06:22 docker.sock
+
+
+
+-->  you will  not be able to run docker commands if you run through your own user name.
+
+since you are not docker group.
+
+cat MyServer:~ # cat /etc/group|grep docker
+docker:x:482:
+MyServer:~ #
+
+
+---> Command to add user a group :-
+
+sudo gpasswd -a vishwana docker
+
+--> then log off and login so you will be able to run docker from own userid.
+====================================================================================================================================================================================
+
+Restart Docker :-
+================
+
+sudo service docker start
+====================================================================================================================================================================================
+
+Docker hub :-
+===============
+
+root@cdldvcldcss0001.es.ad.adp.com:~> docker version
+Client:
+ Version:      17.03.2-ee-5
+ API version:  1.27
+ Go version:   go1.7.5
+ Git commit:   fa09039
+ Built:        Thu Jul 20 00:30:42 2017
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      17.03.2-ee-5
+ API version:  1.27 (minimum version 1.12)
+ Go version:   go1.7.5
+ Git commit:   fa09039
+ Built:        Thu Jul 20 00:30:42 2017
+ OS/Arch:      linux/amd64
+ Experimental: false
+root@cdldvcldcss0001.es.ad.adp.com:~> 
+datacloud/datacloudadmin
+https://dtr.cdl.es.ad.adp.com/?filter=datacloud 
+https://dtr.cdl.es.ad.adp.com/repositories/datacloud/ar-env/details  .
+====================================================================================================================================================================================
+
+
+DTR - Docker registry where we store images .
+UCP - GUI for checking for containers and start /stop them
+Docker compose file - it is the yaml file to perform set of actions at a time . just like ansible playbook yaml file.
+Docker file - is the base file from which we can build images. generally it contains steps/instructions to build image.
+
+
+
+-->  if you want to login into the container that is already  running, we can use "docker exec"
+-> if you want to build docker images " docker build -t mynodes ." -> here dot indicates that dockerfile is present in current dir.
+
+
+
+
+--> BUILD CACHE :-
+==================================
+
+whenever we build an image docker daemon stores  the each instruction info in "build cache" so whenever we  build next image with same docker file it takes less time than 1st build.
+
+===========================================================================================================================================================================================
+
+REDUCING NUMBER OF LAYERS IN IMAGE :-
+===================================
+
+-> Each entry in Docker file is layer to the image. if we want to reduce the layers of image . we can do the following
+
+root@cdldvcldcss0001.es.ad.adp.com:/home/vishwana/DOCKER> cat Dockerfile
+#Simple Web server
+#FROM dtr.cdl.es.ad.adp.com/apptier/ubuntu
+FROM ubuntu
+MAINTAINER arunkumar v
+ENV http_proxy "http://paascloud:8e)P4m)I5y(F9@usproxy.es.oneadp.com:8080"
+ENV https_proxy "http://paascloud:8e)P4m)I5y(F9@usproxy.es.oneadp.com:8080"
+ENV no_proxy ".adp.com,localhost,.whc,.adp,.adpcorp.com,192.168.0.0/16,127.0.0.1,.oneadp.com,.es.ad.adp.com"
+
+
+RUN apt-get update
+RUN apt-get install -y vim
+RUN apt-get install -y apache2
+RUN apt-get install -y apache2-utils
+RUN apt-get clean
+
+
+ENV http_proxy ""
+ENV https_proxy ""
+ENV no_proxy ""
+
+EXPOSE 554
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+root@cdldvcldcss0001.es.ad.adp.com:/home/vishwana/DOCKER>
+
+
+Instead :-
+===========
+#Simple Web server
+#FROM dtr.cdl.es.ad.adp.com/apptier/ubuntu
+FROM ubuntu
+MAINTAINER arunkumar v
+ENV http_proxy "http://paascloud:8e)P4m)I5y(F9@usproxy.es.oneadp.com:8080"
+ENV https_proxy "http://paascloud:8e)P4m)I5y(F9@usproxy.es.oneadp.com:8080"
+ENV no_proxy ".adp.com,localhost,.whc,.adp,.adpcorp.com,192.168.0.0/16,127.0.0.1,.oneadp.com,.es.ad.adp.com"
+
+
+RUN apt-get update 	&& apt-get install -y vim &&  apt-get install -y apache2 &&  apt-get install -y apache2-utils &&  apt-get clean
+
+
+ENV http_proxy ""
+ENV https_proxy ""
+ENV no_proxy ""
+
+EXPOSE 80
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+
+
+docker run -d -p 82:80 webserver2
+
+===========================================================================================================================================================================================
+
+-->
+In docker file ,
+
+we use
+FROM -> we have mention image along with DTR.
+RUN -> to run the commands at build time .
+CMD -> is  used to run the commands at  container runtime  that is the reason we see output of CMD entries post running container.
+ENTRYPOINT -> is similar to CMD which runs at container runtime but it takes  accepts the arguments from "docker run"
+Ex:- docker run -d -P ubuntu:latest Arun => now Arun is the argument to the script/command in Entrypoint.
+ENV -> to declare/export variables.
+COPY -> to copy files from Docker host to container
+ADD -> similar to COPY but it does more like unzip
+MAINTAINER -> author/resource name who is creating it
+EXPOSE -> to expose/declare  port on which perticular service (which is running in container) should run.
+VOLUME -> to create a dir in container and it can  be mapped to a directory in docker host.
+
+
+===========================================================================================================================================================================================
+
+Docker 0 is a bridge and mutiple interfaces can be attached to it:-
+========================================================================
+
+--->  ip a --> network related info.
+
+root@cdldvcldcss0001.es.ad.adp.com:~> ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000
+    link/ether 00:50:56:b0:37:80 brd ff:ff:ff:ff:ff:ff
+    inet 11.16.44.72/22 brd 11.16.47.255 scope global dynamic ens192
+       valid_lft 867570sec preferred_lft 867570sec
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP ---> check this
+    link/ether 02:42:07:29:63:a7 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 scope global docker0
+       valid_lft forever preferred_lft forever
+	   
+	   
+	   
+-> brctl show docker0 - to see interfaces attached to it.
+
+		--> install "bridge-utils" package in oreder to run above command.
+
+root@cdldvcldcss0001.es.ad.adp.com:/etc> brctl show docker0
+bridge name     bridge id               STP enabled     interfaces
+docker0         8000.0242072963a7       no              veth0133168
+                                                        veth032ae49
+                                                        veth062b54f
+                                                        veth07e331a
+
+		
+->  We see interfaces get increased whenever we run new container so each ineterface is a running container.
+
+
+=> docker inspect "conatiner" => to see n/w info/voulmes of  a container
+
+
+-> if you want to know container metadata , please check @ /var/lib/docker/containers
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers> ls -ltr|head
+total 0
+drwx------ 3 root root  17 Apr 24  2017 8c3d0bc72c6b1c623c35922aaed55f222e7212125c55e377b4d4c437b0ee963a
+drwx------ 3 root root  17 Apr 24  2017 9b9142b837644167752a5b887e86ed4f1c2f065ee2251b3c9c89d0ca6cc58809
+drwx------ 3 root root  17 Apr 24  2017 3c0d2df5894fc51d45778b84de68c71fc105b27166092126d476181117381612
+drwx------ 3 root root  17 Apr 24  2017 6e45a77c55d9c62b92931132b777320dce3efd98e0b5817fdcab9240412afe74
+drwx------ 3 root root  17 Apr 24  2017 92f2dd3e570e6757108edc301da0281cce5206d29f21c8668cdaf34355ca2505
+drwx------ 3 root root  17 Apr 25  2017 1977a812920d6b08e1edef841832245395af9ecf6678d549d96fd0ce7a0db16d
+drwx------ 3 root root  17 Apr 25  2017 51011158aa21a5091c19913145f0a453711a4d9a584c160b13435456e807a27d
+drwx------ 3 root root  17 Apr 25  2017 6863bdbbe6edc120f300958ce6f1cc5bc702dd56e309fe1e4f7e66b564e98334
+drwx------ 3 root root  17 Sep  8 20:13 9ddbb09c92257f5f8d61c4a3a5d69a74c51370a7d4bb2f588b28532be7d2a363
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers>
+
+
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers> docker ps |grep webserver2
+ca8e2c49937e        webserver2                                                                                 "apache2ctl -D FOR..."   18 hours ago        Up 18 hours               0.0.0.0:32965->80/tcp               affectionate_mcclintock
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers> cd ca8e2c49937e4713bcc59753e5e25431135ec995cf461f40d6ee18f99b630c26/
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers/ca8e2c49937e4713bcc59753e5e25431135ec995cf461f40d6ee18f99b630c26> ls -ltr
+total 28
+drwx------ 2 root root    6 Dec 20 06:07 checkpoints
+-rw-r--r-- 1 root root  175 Dec 20 06:07 hosts
+-rw-r--r-- 1 root root   89 Dec 20 06:07 resolv.conf
+-rw-r--r-- 1 root root   71 Dec 20 06:07 resolv.conf.hash
+-rw-r--r-- 1 root root   13 Dec 20 06:07 hostname
+drwxrwxrwt 2 root root   40 Dec 20 06:07 shm
+-rw-r--r-- 1 root root 2725 Dec 20 06:07 config.v2.json
+-rw-r--r-- 1 root root 1116 Dec 20 06:07 hostconfig.json
+-rw-r----- 1 root root  243 Dec 20 06:07 ca8e2c49937e4713bcc59753e5e25431135ec995cf461f40d6ee18f99b630c26-json.log
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers/ca8e2c49937e4713bcc59753e5e25431135ec995cf461f40d6ee18f99b630c26> cat hostname
+ca8e2c49937e
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers/ca8e2c49937e4713bcc59753e5e25431135ec995cf461f40d6ee18f99b630c26> cat hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.71     ca8e2c49937e
+root@cdldvcldcss0001.es.ad.adp.com:/var/lib/docker/containers/ca8e2c49937e4713bcc59753e5e25431135ec995cf461f40d6ee18f99b630c26>
+
+
+
+
+
+
+===========================================================================================================================================================================================
+
+
+
+--> Port mapping :-
+===================
+
+we see port mapping info in docer using "Docker ps"
+
+but  you can use "docker port"
+
+root@cdldvcldcss0001.es.ad.adp.com:~> docker ps|grep webserver2
+ca8e2c49937e        webserver2                                                                                 "apache2ctl -D FOR..."   18 hours ago        Up 18 hours                  0.0.0.0:32965->80/tcp               affectionate_mcclintock
+
+root@cdldvcldcss0001.es.ad.adp.com:~> docker port ca8e2c49937e
+80/tcp -> 0.0.0.0:32965
+root@cdldvcldcss0001.es.ad.adp.com:~>
+
+===========================================================================================================================================================================================
+
+Linking Containers :-
+========================
+
+--> Linking containers is more secure than exposing ports.
+
+-> This is to communicate between container to container, not for outside container.
+
+--> When linking containers, container names are very crucial  to identify which source container and target container..
+
+
+->Run source container  like below without exposing port on docker host (it means without -p or -P option)
+
+docker run --name="src" -d imagename
+
+
+-->Now run target container using links
+
+--link=contanername:aliasname
+
+docker run --name="recvr" --link=src:arun-src -it ubuntu /bin/bash
+
+--> To check the links
+
+docker inspect <containerNAme> |grep -i links
+
+===========================================================================================================================================================================================
+
+Trouble shooting :-
+==================
+
+Different logging modes are : info , debug, error,fatal
+
+===========================================================================================================================================================================================
+Docker Daemon logging :-
+=========================
+--> To Setup docker daemon logging : we can use
+
+1> stop Docker service : service docker stop
+2> set the logging mode : docker -d -l info &
+
+-> Now whatever command you execute , you will see the output in debugmode.
+
+-> this info will be useful to troubleshoot when we are unable to start a container..
+
+(OR)
+
+--> if you want to set this log level ,  you can set it in docker  config file
+
+root@cdldvcldcss0001.es.ad.adp.com:/etc/default> cat /etc/default/docker
+DOCKER_OPTS="--log-level=debug"
+root@cdldvcldcss0001.es.ad.adp.com:/etc/default>
+
+--> sudo service docker stop
+--> sudo service docker start
+
+===========================================================================================================================================================================================
+
+Container Logging :-
+========================
+
+--> docker logs <containername> ==> displays of logs of container.
+
+--> docker logs -f <CONTAINERNAME> ==> just like tail -f
+
+
+====================================================================================================================================================================================================================================================================================================================================================================================== :-
+Docker0 bridge
+=========================
+
+We can change the ipaddress of dockebridge by updating docker config file: /etc/default/docer
+
+with 
+
+DOCKER_OPTS=--bip:10.5.170.102/24
+
+then serivce start docker
+
+then ip a
+
+
+
+
+
+
+======================================================================================================================================================================================================================================================================================================================================================================================
+
+-c option :-
+==============
+
+docker  run -d centos:7 ping 127.0.0.0.1 -c 30
+
+
+-c 30 : means ping 30 times
+
+docker logs "Container id"
+
+
+
+======================================================================================================================================================================================================================================================================================================================================================================================
+docker commit "container id" "new image (adp/test :1)"
+
+======================================================================================================================================================================================================================================================================================================================================================================================
+
+docker info|grep seccomp
+
+grep SECCOMP /boot/config-$(uname -r)
+
+
+
+Docker Machine :-
+===================
+
+--> Docker machine is something will help you to mange all your VMS that hosted on different clouds.
+
+For examples, few of your vms hosted on AWS and dew other on google cloud to manage them, Docker machine is useful.
+
+--> github.com/docker/machine/releases/
+
+--> check in google for installation procedure of Docker Machine.
+
+
+
+
+
+Docker promothos => monitoring
+	willy interscope ==> monitoring
+	
+
+
+
+
+
+
+#Image build -Jenkins
+
+cd /home/teste/AR/
+cd DOCKER_15.00.00
+cd app
+docker build -t  dtr.cdl.es.ad.adp.com/ar:ar_app_15.00.00.39 .
+docker images |grep "ar_app_15.00.00.39"
+docker login -u datacloud -p datacloudadmin https://dtr.cdl.es.ad.adp.com
+docker push dtr.cdl.es.ad.adp.com/ar:ar_app_15.00.00.39
+
+
+Pushing images to my own dockerhub :-
+======================================
+export HTTPS_PROXY="https://usproxy.es.oneadp.com:8080/"
+
+cdldvadavbu0001:/datacloud/SR # docker images|grep wlpbaseapp
+dtr.cdl.es.ad.adp.com/apptier/wlpbaseapp      16.0.0.2.withcurl         fda590dad287        13 months ago       650MB
+cdldvadavbu0001:/datacloud/SR # 
+
+docker login --username varunv91 --password Arunkumar@91
+docker tag  dtr.cdl.es.ad.adp.com/apptier/wlpbaseapp:16.0.0.2.withcurl varunv91/wlp:wlplatest
+docker push varunv91/wlp or docker push varunv91/wlp:wlplatest
+
+
+
+
+
+
+Docker compose file version VS Docker Engine version
+
+https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix 
+
+
+
+
+
+
+
+
+
+
+
+
+
