@@ -1,0 +1,27 @@
+
+#Image build -Jenkins
+
+cd /home/teste/AR/
+cd DOCKER_15.00.00
+cd app
+docker build -t  dtr.cdl.es.ad.adp.com/ar:ar_app_15.00.00.39 .
+docker images |grep "ar_app_15.00.00.39"
+docker login -u datacloud -p datacloudadmin https://dtr.cdl.es.ad.adp.com
+docker push dtr.cdl.es.ad.adp.com/ar:ar_app_15.00.00.39
+
+
+
+
+
+docker login https://hub.docker.com/r/varunv91
+
+cdldvadavbu0001:/datacloud/SR # docker images|grep wlpbaseapp
+dtr.cdl.es.ad.adp.com/apptier/wlpbaseapp      16.0.0.2.withcurl         fda590dad287        13 months ago       650MB
+cdldvadavbu0001:/datacloud/SR # 
+
+
+
+docker login --username varunv91 --password Arunkumar@91
+docker tag  dtr.cdl.es.ad.adp.com/apptier/wlpbaseapp:16.0.0.2.withcurl varunv91/os
+docker push varunv91/os
+
