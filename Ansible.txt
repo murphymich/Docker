@@ -1086,6 +1086,65 @@ cdlsparkgwuser
 
 vishwana@cdldvadavbu0001:/opt/ADP/SPARK>
 
+=======================================================================================================================================
+
+Ansible with windows :-
+=====================
+
+--> in ansible.cfg , you can add "inventory = /tmp/inventory" so that you don't need to use "-i inventory" word.
 
 
+--> setup Module will helpful to get system info of windows servers.
 
+	ansible all -i inventory -m setup
+	
+
+--> Module "raw" just like "shell " in linux , you can type in "Windows commands"
+
+	ansible all -i inventory -m raw -a "dir"
+
+	ansible all -i inventory -m raw -a "ipconfig"
+
+--> Module :win_service  is to stop/start/status of windows server.
+
+	ansible all -i inventory -m win_service -a "name=spooler" ==> to get the status of windows server 
+
+	ansible all -i inventory -m win_service -a "name=spooler state=stopped"  ==> to stop a windows server.
+
+	ansible all -i inventory -m win_service -a "name=spooler state=started"  ==> to start a windows server.
+
+
+--> Module :win_feature  to install something on windows server.
+
+	ansible all -i inventory -m win_feature -a "name=Telnet_Client state=present"  ==> To install telnet on windows servers.
+	
+	
+-->  you can use variable called "ansible_os_family" to differentiate OS.
+	
+		Tasks :
+		- name:check IIS installed
+		  win_feature:
+		    name : web-server
+			state: present
+		  when : ansible_os_family == "windows"	
+		  
+    if you use this , if there is any linux server in inventory , it will just "skip" that server. on console , you can see "skipping"
+	
+-> Module :Template : to deploy some file to some location like copy  for  linux
+
+		Tasks :
+		- name:Deploy index file.
+		  template:
+		    src : index.j2
+			dest: c:\inetpub\
+				
+	if you want to you use any ansible varible in any file use : {{ ansible_fqdn }}
+	
+	
+	
+
+			
+			
+		
+		
+	
