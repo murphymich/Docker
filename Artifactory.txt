@@ -1,0 +1,25 @@
+#Artifactory setup
+
+
+#Backing the file to the archive
+echo uploading to artifactory
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ${VERSIONDETAILS}_${LATEST_VER}.tar.gz "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Backups/"
+mv ${VERSIONDETAILS}_${LATEST_VER}.tar.gz ${VERSIONDETAILS}.tar.gz
+
+#Deleting the previous LatestBackup file from Releases.
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -XDELETE "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Releases/${VERSIONDETAILS}.tar.gz"
+
+#Placing the file to the Releases.
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -T ${VERSIONDETAILS}.tar.gz "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Releases/"
+
+rm -rf ${VERSIONDETAILS}.tar.gz
+
+
+
+#Download :-
+
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O "https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Scripts/AR_APP_PACKAGING.sh"
+
+curl -ujanzz_user:APB91nEwvzEyry2K45Wmo4ZZGB6 -O https://artifactoryprod.es.ad.adp.com/artifactory/datacloud-integration/Dockerfiles
+
+
