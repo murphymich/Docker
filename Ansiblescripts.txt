@@ -109,6 +109,95 @@ MyServer:/tmp/ar #
 
 
 
+vishwana@mysqltest123:~>>  ansible 11.3.246.123 -i PROD -m shell -a "cat /adpr/migration/data-cloud-migration-engine-server/conf/database.properties" --sudo|grep "HOST"|sed "s/HOST/;/g"|cut -f2 -d ";"|cut -f1 -d ")"|tr -d "="|tr -d " "|sort -u |sed "s/^/telnet /g"|sed "s/$/ 1521/g"
+
+telnet 172.24.152.73 1521 < /dev/null
+telnet dc1prtlf4-scan.whc.dc01.us.adp 1521 < /dev/null 
+
+telnet dc1prtuf8-scan.whc.dc01.us.adp 1521 < /dev/null
+telnet dc2prtgf4-scan.whc.dc02.us.adp 1521 < /dev/null
+
+telnet dc2prtrf4-scan.whc.dc02.us.adp 1521 < /dev/null
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+vishwana@mysqltest123:~>>
+
+
+
+
+vishwana@mysqltest123:~>>  ansible 11.3.246.123 -i PROD -m shell -a "cat /adpr/migration/data-cloud-migration-engine-server/conf/database.properties" --sudo|grep "HOST"|sed "s/HOST/;/g"|cut -f2 -d ";"|cut -f1 -d ")"|tr -d "="|tr -d " "|sort -u |sed "s/^/telnet /g"|sed "s/$/ 1521/g"
+echo "`hostname` " > 1.txt ; telnet 172.24.152.73 1521  < /dev/null >> 1.txt &
+echo "`hostname` " > 2.txt ;telnet dc1prtlf4-scan.whc.dc01.us.adp 1521 < /dev/null >> 2.txt &
+echo "`hostname` " > 3.txt ;telnet dc1prtuf8-scan.whc.dc01.us.adp 1521 < /dev/null >> 3.txt &
+echo "`hostname` " > 4.txt ;telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null >> 4.txt &
+echo "`hostname` " > 5.txt ;telnet dc2prtgf4-scan.whc.dc02.us.adp 1521 < /dev/null >> 5.txt &
+echo "`hostname` " > 6.txt ;telnet dc2prtrf4-scan.whc.dc02.us.adp 1521 < /dev/null >> 6.txt &
+vishwana@mysqltest123:~>>
+
+< /dev/null >> /dev/null &
+
+ cat ME.txt |egrep "SUCCESS|Connected"
+
+ 
+ =========================================
+11.1.164.222: 
+ telnet dc2prtff2-scan.es.ad.adp.com 1521
+ 
+11.1.164.223: 
+ telnet dc2prtff2-scan.es.ad.adp.com 1521
+ 
+11.1.164.224: 
+ telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+ 
+ 11.1.164.225:
+ telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+ 
+ 11.1.99.115
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+
+11.1.99.124
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+
+11.3.225.227
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+
+
+11.3.254.195
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+
+
+11.3.225.224
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+
+11.3.254.77
+telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+
+
+11.3.225.225
+ telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+ 
+ 11.3.164.42
+ 11.3.225.226
+ telnet dc2prtff2-scan.es.ad.adp.com 1521 < /dev/null
+ 11.3.252.222
+ 11.3.252.224
+ 11.3.252.225
+ 
+ =================================================================================================
+ 
+ 
+ mkdir -p /adpr_mes ; mount -t  nfs dc2f12c1nasv3.whc.dc02.us.adp:/hrii_uat_adpr  /adpr_mes
+ 
+ echo "dc2f12c1nasv3.whc.dc02.us.adp:/hrii_uat_adpr /adpr_mes nfs rw,bg,hard,nointr,tcp,vers=3,rsize=32768,wsize=32768,timeo=600,actimeo=0 0 1" >> /etc/fstab
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+
 
 
 
